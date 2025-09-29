@@ -1,0 +1,21 @@
+import sqlite3
+
+DB_PATH = os.getenv("DATABASE_PATH", "payments.db")
+
+def init_db():
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS payments
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      user_id INTEGER,
+                      amount REAL,
+                      invoice_id TEXT,
+                      status TEXT)''')
+        conn.commit()
+
+def add_payment(user_id, amount, invoice_id, status):
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute('INSERT INTO payments (user_id, amount, invoice_id, status) VALUES (?, ?, ?, ?)',
+                  (user_id, amount, invoice_id, status))
+        conn.commit()
